@@ -15,11 +15,12 @@ function post(url, method, param) {
 }
 
 
-function sendRequest(){
+function sendRequest(cmd){
     browser.tabs.query({currentWindow: true}).then((tabs) => {
         for (let tab of tabs) {
             if (tab.active) {
-                post('http://127.0.0.1:8888', 'POST', '{ "command": ["loadfile", "' + tab.url + '"] }');
+                cmd.command[1] = tab.url;
+                post('http://127.0.0.1:8888', 'POST', JSON.stringify(cmd));
             }
         }
     });
@@ -34,5 +35,18 @@ browser.browserAction.onClicked.addListener(() => {
 
 // on hotkey
 browser.commands.onCommand.addListener((command) => {
-    sendRequest();
+    var cmd = JSON.parse('{ "command":[]}');
+        cmd.command[0] = 'loadfile';
+        cmd.command[1] = '';
+    switch (command) {
+        case 'loadfile':
+            // console.log(cmd);
+            break;
+        case 'append-play':
+            cmd.command[2] = 'append-play';
+            // console.log(cmd);
+            break;
+        default:
+    }
+    sendRequest(cmd);
 });

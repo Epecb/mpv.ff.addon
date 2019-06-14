@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "Url2MPV",
     "version": "1.0",
-    "description": "Press Ctrl+Shift+U or click button to send Url to mpv idc",
+    "description": "Press Ctrl+Shift+1/2 or click button to send Url to mpv idc",
     "icons": {
         "48": "mpv-symbolic.svg"
     },
@@ -11,14 +11,18 @@
         "scripts":["background.js"]
     },
     "commands": {
-        "toggle-feature": {
-            "suggested_key": { "default": "Ctrl+Shift+U" },
-            "description": "Send current tab to mpv idc"
+        "loadfile": {
+            "suggested_key": { "default": "Ctrl+Shift+1" },
+            "description": "Send current tab to play mpv idc"
+        },
+        "append-play": {
+            "suggested_key": { "default": "Ctrl+Shift+2" },
+            "description": "Send current tab to append playlist mpv idc"
         }
     },
     "browser_action": {
         "browser_style": true,
-        "default_title": "Send current tab to mpv idc",
+        "default_title": "Send current tab to play mpv idc",
         "default_icon": {
             "32": "mpv-gradient.svg"
         }
