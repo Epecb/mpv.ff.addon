@@ -29,7 +29,9 @@ function sendRequest(cmd){
 
 // menu bar button press
 browser.browserAction.onClicked.addListener(() => {
-    sendRequest();
+    var cmd = JSON.parse('{ "command":[]}');
+        cmd.command[0] = 'loadfile';
+    sendRequest(cmd);
 });
 
 
