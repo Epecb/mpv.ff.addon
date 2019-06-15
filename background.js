@@ -52,3 +52,37 @@ browser.commands.onCommand.addListener((command) => {
     }
     sendRequest(cmd);
 });
+
+
+// Context menu on loadfile
+browser.contextMenus.create({
+    id: "loadfile",
+    title: "loadfile",
+    contexts: ["link"],
+});
+
+
+// Context menu on append-play
+browser.contextMenus.create({
+    id: "append-play",
+    title: "append-play",
+    contexts: ["link"],
+});
+
+
+// on menu click
+browser.contextMenus.onClicked.addListener((info, tab) => {
+    var cmd = JSON.parse('{ "command":[]}');
+        cmd.command[0] = 'loadfile';
+        cmd.command[1] = '';
+    switch (info.menuItemId) {
+        case 'loadfile':
+            break;
+        case 'append-play':
+            cmd.command[2] = 'append-play';
+            break;
+        default:
+    }
+    cmd.command[1] = info.linkUrl;
+    post('http://127.0.0.1:8888', 'POST', JSON.stringify(cmd));
+});
