@@ -10,6 +10,7 @@ function post(url, method, param) {
     }
     // xhReq.open("GET", "http://localhost:8000/",true);
     xhReq.open( param == null ? "GET" : "POST", url, true);
+    xhReq.timeout = 100;
     xhReq.setRequestHeader("Content-Type", "text/json");
     xhReq.send(param);
 }
