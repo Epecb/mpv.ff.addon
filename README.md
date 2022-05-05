@@ -10,4 +10,6 @@ Send url from firefox tab to mpv ipc
 
 ## Usage
 
-    Open youtube video and press ctr+shift+u or click button in ff bar.
+    Context menu on video url: Url2Mpv->loadfile or Url2Mpv->append-play.
+    Open youtube video and press Ctrl+Shift+Space or Alt+Shift+Space for append/start mpv playlist.
+    Click button in ff bar.
