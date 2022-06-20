@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 logme(){
     lasturl=$(tail -n 2 /dev/shm/mpv.log.url.txt | sed 's/^.*le","//;s/".*$//;/^$/d')
