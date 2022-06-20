@@ -54,6 +54,7 @@ mpv --force-window=immediate --osd-level=3 --speed=2.42 --ytdl-format='best[heig
 
 sleep 1
 
-control_fail_playback &
+
+# control_fail_playback &
 
 control_add_url
