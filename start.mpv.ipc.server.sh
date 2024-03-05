@@ -42,16 +42,37 @@ control_add_url() {
         printf "%s\t%s %s\n" "${nowdata}" "${lasturl}" "${gettitle}"
         printf "<a href=\"%s\">%s %s</a><br>\n" "${lasturl}" "${nowdata}" "${gettitle}" >> /dev/shm/mpv.server.log.html
     }
+    check_pid() {
+        while true; do
+            if [[ ! -d /proc/$mpv_pid ]]; then
+               echo "exit"
+               echo "exit" | nc 127.0.0.1 8888 -q 3
+               exit
+            fi
+            sleep 5
+            # echo "check $mpv_pid"
+            # echo $$
+        done
+    }
 
+    check_pid &
+    firs_iter=1
     while [ "$(lsof -t /tmp/mpvsocket)" ]; do
-        echo "HTTP/1.0 200 OK" | nc -l -p 8888 | sed -un '/^POST/,/^\r/!p;$a \\' | tee -a /dev/shm/mpv.log.url.txt | socat - /tmp/mpvsocket
-        logme &
+        if [[ ${firs_iter} -eq 0 ]]; then
+            logme &
+        fi
+        # echo "HTTP/1.0 200 OK" | nc -l -p 8888 | sed -un '/^POST/,/^\r/!p;$a \\' | tee -a /dev/shm/mpv.log.url.txt | socat - /tmp/mpvsocket
+        echo "HTTP/1.0 200 OK" | nc -l 127.0.0.1  8888 | sed -un '/^POST/,/^\r/!p;$a \\' | tee -a /dev/shm/mpv.log.url.txt | socat - /tmp/mpvsocket
+        firs_iter=0
     done
+    wait
 }
 
 
+# mpv --no-osc --force-window=immediate --osd-level=3 --speed=2.42 --ytdl-format='best[height<=720]/bestvideo[height<=720]+bestaudio' --idle --input-ipc-server=/tmp/mpvsocket &
 mpv --force-window=immediate --osd-level=3 --speed=2.42 --ytdl-format='best[height<=720]/bestvideo[height<=720]+bestaudio' --idle --input-ipc-server=/tmp/mpvsocket &
-
+mpv_pid=$!
+# echo $$
 sleep 1
 
 
