@@ -79,8 +79,9 @@ control_add_url() {
 # fix fps for laggy video with vaapi
 mpv --http-proxy="http://127.0.0.1:12081" \
     --force-window=immediate \
-    --osd-level=3 \
+    --osd-level=1 \
     --speed=3.22 \
+    --msg-level=osd=no \
     --ytdl-format='best[height<=720][vcodec^=avc1][fps<=40]/bestvideo[height<=720][vcodec^=avc1][fps<=40]+bestaudio' \
     --idle --input-ipc-server=/tmp/mpvsocket &
 mpv_pid=$!
