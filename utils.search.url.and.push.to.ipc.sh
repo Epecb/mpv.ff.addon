@@ -16,5 +16,5 @@ echo "${yt_id}"
 
 pull_data="$(sed -n "/${yt_id}/,\$p" /dev/shm/mpv.log.url.txt)"
 
-./utils.push.to.ipc.from.file.sh <(printf "%s" "${pull_data}")
+./utils.push.to.ipc.from.file.sh <(printf "%s\n" "${pull_data}")
 # sed -n '/njeajRm_RIk/,$p' /dev/shm/mpv.log.url.txt > /dev/shm/tst.txt

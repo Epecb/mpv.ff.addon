@@ -77,18 +77,30 @@ control_add_url() {
 # ytproxy for fix ffmpeg bug
 # mpv --http-proxy="http://127.0.0.1:12081" --force-window=immediate --osd-level=3 --speed=2.42 --ytdl-format='best[height<=720][vcodec^=avc1]/bestvideo[height<=720][vcodec^=avc1]+bestaudio' --idle --input-ipc-server=/tmp/mpvsocket &
 # fix fps for laggy video with vaapi
-mpv --http-proxy="http://127.0.0.1:12081" \
-    --force-window=immediate \
-    --osd-level=1 \
-    --speed=3.22 \
-    --msg-level=osd=no \
-    --ytdl-format='best[height<=720][vcodec^=avc1][fps<=40]/bestvideo[height<=720][vcodec^=avc1][fps<=40]+bestaudio' \
-    --idle --input-ipc-server=/tmp/mpvsocket &
-mpv_pid=$!
-# echo $$
-sleep 1
-
-
+if [[ -z ${1} ]]; then
+    echo "LOWres"
+    mpv --http-proxy="http://127.0.0.1:12081" \
+        --force-window=immediate \
+        --osd-level=1 \
+        --speed=3.22 \
+        --msg-level=osd=no \
+        --ytdl-format='best[height<=720][vcodec^=avc1][fps<=40]/bestvideo[height<=720][vcodec^=avc1][fps<=40]+bestaudio' \
+        --idle --input-ipc-server=/tmp/mpvsocket &
+    mpv_pid=$!
+    # echo $$
+    sleep 1
+else
+    echo "HIres"
+    mpv --http-proxy="http://127.0.0.1:12081" \
+        --force-window=immediate \
+        --osd-level=3 \
+        --speed=3.22 \
+        --ytdl-format='bestvideo[height<=720][vcodec^=avc1][fps<=40]+bestaudio/best[height<=720][vcodec^=avc1][fps<=40]' \
+        --idle --input-ipc-server=/tmp/mpvsocket &
+    mpv_pid=$!
+    sleep 1
+fi
 # control_fail_playback &
 
 control_add_url
+./utils.arch.log.sh
