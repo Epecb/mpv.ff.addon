@@ -8,7 +8,8 @@ control_fail_playback() {
         local gettitle
         local nowdata
         url="$1"
-        gettitle=$(yt-dlp --get-title "${url}")
+        # gettitle=$(yt-dlp --get-title "${url}")
+        gettitle=$(yt-dlp --print "%(title)s - %(duration>%H:%M:%S)s" "${url}")
         nowdata=$(LC_ALL=C date +"%A %B %D %R")
         printf "<a href=\"%s\">%s %s</a><br>\n" "${url}" "${nowdata}" "${gettitle}" >> /dev/shm/mpv.server.error.log.html
     }
@@ -37,10 +38,12 @@ control_fail_playback() {
 control_add_url() {
     logme(){
         lasturl=$(tail -n 2 /dev/shm/mpv.log.url.txt | sed 's/^.*le","//;s/".*$//;/^$/d')
-        gettitle=$(yt-dlp --get-title "${lasturl}")
+        # gettitle=$(yt-dlp --get-title "${lasturl}")
+        gettitle=$(yt-dlp --print "%(title)s - %(duration>%H:%M:%S)s" "${lasturl}")
         nowdata=$(LC_ALL=C date +"%A %B %D %R")
         printf "%s\t%s %s\n" "${nowdata}" "${lasturl}" "${gettitle}"
         printf "<a href=\"%s\">%s %s</a><br>\n" "${lasturl}" "${nowdata}" "${gettitle}" >> /dev/shm/mpv.server.log.html
+        sleep 5
     }
     check_pid() {
         while true; do
@@ -79,26 +82,47 @@ control_add_url() {
 # fix fps for laggy video with vaapi
 if [[ -z ${1} ]]; then
     echo "LOWres"
+    # mpv \
     mpv --http-proxy="http://127.0.0.1:12081" \
         --force-window=immediate \
         --osd-level=1 \
         --speed=3.22 \
         --msg-level=osd=no \
-        --ytdl-format='best[height<=720][vcodec^=avc1][fps<=40]/bestvideo[height<=720][vcodec^=avc1][fps<=40]+bestaudio' \
+        --ytdl-format='best[height<=360][vcodec^=avc1]/bestvideo[height<=360][vcodec^=avc1]+(bestaudio[format_note*=original]/bestaudio)' \
         --idle --input-ipc-server=/tmp/mpvsocket &
     mpv_pid=$!
+
+        # --ytdl-raw-options=extractor-arg="youtube:player_client=-tv" \
+        # --ytdl-format='best[height<=370]' \
+
+        # --ytdl-format='best[height<=360][vcodec^=avc1]/bestvideo[height<=360][vcodec^=avc1]+bestaudio' \
+        # --ytdl-format='best[height<=720][vcodec^=avc1][fps<=40]/bestvideo[height<=720][vcodec^=avc1][fps<=40]+bestaudio' \
+        # --ytdl-raw-options=extractor-arg=\"youtube:player_client=default,-tv\" \
     # echo $$
     sleep 1
-else
+elif [[ ${1} = 'hi' ]]; then
     echo "HIres"
     mpv --http-proxy="http://127.0.0.1:12081" \
         --force-window=immediate \
         --osd-level=3 \
         --speed=3.22 \
-        --ytdl-format='bestvideo[height<=720][vcodec^=avc1][fps<=40]+bestaudio/best[height<=720][vcodec^=avc1][fps<=40]' \
+        --ytdl-format='bestvideo[height<=720][vcodec^=avc1][fps<=40]+(bestaudio[format_note*=original]/bestaudio)/best[height<=720][vcodec^=avc1][fps<=40]' \
         --idle --input-ipc-server=/tmp/mpvsocket &
     mpv_pid=$!
     sleep 1
+else
+    # $2 - height of video
+    echo "turbulent ${2}"
+    # mpv \
+    mpv --http-proxy="http://127.0.0.1:12081" \
+        --force-window=immediate \
+        --osd-level=3 \
+        --speed=3.22 \
+        --ytdl-format="best[height<=${2}]" \
+        --idle --input-ipc-server=/tmp/mpvsocket &
+    mpv_pid=$!
+    sleep 1
+        # --ytdl-raw-options=extractor-arg="youtube:player_client=-tv" \
 fi
 # control_fail_playback &
 
