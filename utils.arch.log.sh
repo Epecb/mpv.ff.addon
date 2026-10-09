@@ -17,7 +17,8 @@ if [[ -a "${prevFile}" ]]; then
         rm "${name}"
         exit
     else
-        echo -e "\tNot equal. Continue."
+        echo -e "\tNot equal. Replace prev. Continue."
+        cp "${name}" "${prevFile}"
     fi
 else
     echo "No file"
